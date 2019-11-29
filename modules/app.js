@@ -70,6 +70,19 @@ var budgetController = (function() {
       return newItem;
     },
 
+    deleteItem: function(type, id) {
+      var ids, index;
+      ids = data.allItems[type].map(function(current) {
+        return current.id;
+      });
+
+      index = ids.indexOf(id);
+
+      if(index !== -1) {
+        data.allItems[type].splice(index, 1);
+      }
+    },
+
     //PUBLIC
     calculateBudget: function() {
       //1. calculate total income and expenses
@@ -149,6 +162,12 @@ UIController = (function() {
 
       //Insert the HTML into the DOM
       document.querySelector(ele).insertAdjacentHTML('beforeend', newHTML);
+    },
+
+    deleteListItem: function(selectorID, ) {
+      var ele = document.getElementById(selectorID);
+      ele.parentNode.removeChild(ele);
+
     },
     //PUBLIC
     clearFields: function() {
@@ -241,16 +260,17 @@ var appController = (function(budgetCtrl, UICtrl) {  //module
       //inc-1
       splitID = itemID.split('-');
       type = splitID[0];
-      ID = splitID[1];
+      ID = parseInt(splitID[1]);
 
-      //1. dete the item formt he data structure
+      //1. delete the item form the data structure
+      budgetCtrl.deleteItem(type, ID);
 
       //2. Delete the item from the UI
+      UICtrl.deleteListItem(itemID);
 
       //3. Update and show the budget
-    } else {
-
-    }
+      updateBudget();
+    } 
   };
 
   //PUBLIC -- ONE METHOD TO CONTROL THE APPLICATION: "init"
